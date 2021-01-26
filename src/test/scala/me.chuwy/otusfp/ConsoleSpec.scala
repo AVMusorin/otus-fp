@@ -12,34 +12,12 @@
  */
 package me.chuwy.otusfp
 
-import me.chuwy.otusfp.Interpreter._
-import me.chuwy.otusfp.algebra.Contacts
 import org.specs2.mutable.Specification
 
-class CommandSpec extends Specification {
-
-  "help" should {
-    "print a help message" in {
-      val result = Command.help[Test].runS(RealWorld.init).value
-      result must beEqualTo(RealWorld(List("Use ADD or LIST"), Nil))
-    }
-  }
-
-  "list and save" should {
-    "work together" in {
-      val resultS = for {
-        first <- Contacts[Test].list
-        exitCode <- Command.save[Test]("joe@gmail.com 1988")
-        _ <- Command.list[Test]
-        second <- Contacts[Test].list
-      } yield (first, second)
-
-      val (endState, (first, second)) = resultS.run(RealWorld.init).value
-      println(endState)
-
-      first must beEmpty
-      second must haveSize(1)
-
+class ConsoleSpec extends Specification {
+  "ConsoleSpec" should {
+    "foo" in {
+      ok
     }
   }
 }

@@ -12,7 +12,15 @@ import fs2.io.file.{writeAll, createDirectory, readAll, directoryStream, delete 
 import me.chuwy.otusfp.data.Contact
 import me.chuwy.otusfp.data.Contact.Id
 
+trait Contacts[F[_]] {
+  def list: F[List[(Contact.Id, Contact)]]
+  def add(person: Contact): F[Unit]
+  def delete(id: Id): F[Unit]
+}
+
 object Contacts {
+
+  def apply[F[_]](implicit ev: Contacts[F]): Contacts[F] = ev
 
   // (игнорировать)
   private implicit val CS = IO.contextShift(concurrent.ExecutionContext.global)
@@ -27,6 +35,17 @@ object Contacts {
     } yield (path, blocker)
 
   // Реализации (детали неважны)
+
+  val ioInterprter = new Contacts[IO] {
+    def list: IO[List[(Contact.Id, Contact)]] =
+      Contacts.list
+
+    def add(person: Contact): IO[Unit] =
+      Contacts.add(person)
+
+    def delete(id: Id): IO[Unit] =
+      Contacts.delete(id)
+  }
 
   def list: IO[List[(Contact.Id, Contact)]] =
     blockerInDir.use { case (fileDb, b) =>
