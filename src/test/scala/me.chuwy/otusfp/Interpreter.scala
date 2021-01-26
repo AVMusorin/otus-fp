@@ -20,7 +20,7 @@ object Interpreter {
     new Console[Test] {
       def putStrLn(str: String): Test[Unit] =
         State { (rw: RealWorld) =>
-          (RealWorld(str :: rw.log, Nil), ())
+          (RealWorld(str :: rw.log, rw.contacts), ())   // Ошибка была здесь
         }
     }
 
